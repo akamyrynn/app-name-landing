@@ -1,0 +1,221 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=WDXL+Lubrifont+SC&display=swap");
+
+@import url("https://fonts.cdnfonts.com/css/schabo");
+
+:root {
+  --base-100: #f2eeda;
+  --base-200: #8c8a7f;
+  --base-300: #262626;
+  --base-400: #141414;
+  --base-500: #ee6436;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  background-color: var(--base-400);
+  color: var(--base-100);
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+h1,
+h2,
+h3 {
+  text-transform: uppercase;
+  font-family: "SCHABO", sans-serif;
+  font-weight: 500;
+  line-height: 0.85;
+}
+
+h1 {
+  font-size: clamp(4rem, 10vw, 10rem);
+  letter-spacing: clamp(-0.05rem, -1vw, -0.15rem);
+}
+
+h2 {
+  font-size: clamp(3.25rem, 8vw, 8rem);
+  letter-spacing: clamp(-0.025rem, -0.75vw, -0.1rem);
+}
+
+h3 {
+  font-size: clamp(2.5rem, 6.5vw, 5rem);
+  letter-spacing: clamp(0rem, -0.5vw, -0.075rem);
+}
+
+a,
+p {
+  text-decoration: none;
+  text-transform: uppercase;
+  color: var(--base-100);
+  font-family: "Geist Mono", monospace;
+  font-weight: 500;
+  line-height: 1;
+}
+
+a,
+p {
+  font-size: clamp(0.8rem, 0.75vw, 0.85rem);
+}
+
+a.md,
+p.md {
+  font-size: clamp(1rem, 0.8vw, 1.25rem);
+}
+
+a.lg,
+p.lg {
+  font-size: clamp(1.1rem, 0.85vw, 1.35rem);
+}
+
+p.bodyCopy {
+  text-transform: none;
+  font-family: "Host Grotesk", sans-serif;
+  font-weight: 450;
+  line-height: 1.1;
+}
+
+p.bodyCopy {
+  font-size: clamp(1.125rem, 0.75vw, 1.25rem);
+}
+
+p.bodyCopy.md {
+  font-size: clamp(1.25rem, 0.85vw, 1.35rem);
+}
+
+p.bodyCopy.lg {
+  font-size: clamp(1.375rem, 0.95vw, 1.45rem);
+}
+
+.btn {
+  display: inline-block;
+}
+
+a.btn {
+  position: relative;
+  width: max-content;
+  min-width: 200px;
+  height: 65px;
+  padding: 0 2rem;
+  font-weight: 400;
+  letter-spacing: 1.8px;
+  color: var(--base-200);
+  background-color: var(--base-400);
+  border: solid 1px var(--base-300);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+a.btn > *:not(.btn-line) {
+  position: relative;
+  z-index: 1;
+}
+
+a.btn:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  width: 60px;
+  height: 1px;
+  transform: translateY(-1px);
+  background: var(--base-100);
+  transition: all 0.3s ease;
+}
+
+a.btn:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 10%;
+  width: 60px;
+  height: 1px;
+  transform: translateY(1px);
+  background: var(--base-100);
+  transition: all 0.3s ease;
+}
+
+a.btn:hover {
+  color: var(--base-100);
+  border: solid 1px var(--base-300);
+  text-shadow: 0 0 10px rgba(242, 238, 218, 0.2);
+}
+
+a.btn:hover:before {
+  left: 0;
+  width: 20px;
+}
+
+a.btn:hover:after {
+  right: 0;
+  width: 20px;
+}
+
+a.btn:hover .btn-line:before {
+  bottom: -1px;
+}
+
+a.btn:hover .btn-line:after {
+  top: -1px;
+}
+
+.btn-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.btn-line:before {
+  content: "";
+  position: absolute;
+  bottom: 30%;
+  right: -1px;
+  width: 1px;
+  height: 20px;
+  background: var(--base-100);
+  transition: all 0.3s ease;
+}
+
+.btn-line:after {
+  content: "";
+  position: absolute;
+  top: 30%;
+  left: -1px;
+  width: 1px;
+  height: 20px;
+  background: var(--base-100);
+  transition: all 0.3s ease;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  padding: 1.5rem;
+  max-width: 2000px;
+  margin: 0 auto;
+}
+
+.line {
+  position: relative;
+  will-change: transform;
+}

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orbit Matter | MWT November 2025 | Codegrid</title>
+    <link rel="icon" href="/global/site_logo.png" type="image/png" />
+    <meta name="author" content="Codegrid" />
+
+    <link rel="stylesheet" href="/globals.css" />
+    <link rel="stylesheet" href="/css/nav.css" />
+    <link rel="stylesheet" href="/css/interactive-grid.css" />
+    <link rel="stylesheet" href="/css/transition.css" />
+    <link rel="stylesheet" href="/css/preloader.css" />
+    <link rel="stylesheet" href="/css/home.css" />
+    <link rel="stylesheet" href="/css/footer.css" />
+  </head>
+  <body>
+    <div class="preloader-overlay">
+      <div class="preloader-grid"></div>
+
+      <div class="preloader-animation-wrapper">
+        <p class="preloader-text">Stabilizing Feed</p>
+        <div class="preloader-ring-frame"></div>
+        <div class="preloader-disc-frame"></div>
+      </div>
+    </div>
+
+    <svg
+      style="visibility: hidden; position: absolute"
+      width="0"
+      height="0"
+      xmlns="http://www.w3.org/2000/svg"
+      version="1.1"
+    >
+      <defs>
+        <filter id="goo">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+          <feColorMatrix
+            in="blur"
+            mode="matrix"
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
+            result="goo"
+          />
+          <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+        </filter>
+      </defs>
+    </svg>
+
+    <div class="interactive-grid"></div>
+
+    <div class="transition-grid"></div>
+
+    <nav>
+      <div class="nav-container">
+        <div class="nav-bg"></div>
+      </div>
+
+      <div class="nav-mobile-header">
+        <p class="nav-logo">Orbit Matter</p>
+        <p class="nav-menu-toggle">Menu</p>
+      </div>
+
+      <div class="nav-overlay">
+        <div class="nav-items">
+          <div class="nav-item"><a href="/">Index</a></div>
+          <div class="nav-item"><a href="/observatory">Observatory</a></div>
+          <div class="nav-item"><a href="/expedition">Expedition</a></div>
+          <div class="nav-item"><a href="/traces">Traces</a></div>
+          <div class="nav-item"><a href="/contact">Contact</a></div>
+        </div>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-container">
+        <div class="hero-img-container">
+          <div class="hero-img">
+            <img src="/index/hero.jpg" alt="" />
+          </div>
+
+          <div class="hero-img-overlay"></div>
+
+          <div class="hero-img-gradient"></div>
+        </div>
+
+        <div class="hero-content">
+          <div class="container">
+            <div class="hero-content-nav">
+              <div class="hero-timer">
+                <p>Zone 00 __ 00:00</p>
+              </div>
+            </div>
+
+            <div class="hero-content-header">
+              <h1 data-animate-variant="slide" data-animate-delay="0.6">
+                Interplanetary<br />Observatory
+              </h1>
+            </div>
+
+            <div class="hero-content-footer">
+              <div class="hero-footer-copy">
+                <p
+                  class="bodyCopy"
+                  data-animate-variant="slide"
+                  data-animate-delay="0.75"
+                >
+                  Operating beyond planetary boundaries, Orbit Matter studies
+                  the structures, signals, and surface conditions of distant
+                  environments. All findings are logged, analyzed, and stored
+                  within our observational network.
+                </p>
+              </div>
+
+              <div class="hero-callout">
+                <p data-animate-variant="flicker" data-animate-delay="0.85">
+                  Traced Entry / 00.239
+                </p>
+                <p data-animate-variant="flicker" data-animate-delay="1">
+                  Feed Stabilized
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="intro">
+      <div class="container">
+        <div class="stats-container">
+          <div class="stat">
+            <div class="stat-copy">
+              <div class="stats-copy-label"><p>Worlds Observed</p></div>
+              <div class="stats-copy-count"><h3>12</h3></div>
+            </div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-copy">
+              <div class="stats-copy-label"><p>Recovered Fragments</p></div>
+              <div class="stats-copy-count"><h3>64</h3></div>
+            </div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-copy">
+              <div class="stats-copy-label"><p>Signal Events</p></div>
+              <div class="stats-copy-count"><h3>23</h3></div>
+            </div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-copy">
+              <div class="stats-copy-label"><p>Active Units</p></div>
+              <div class="stats-copy-count"><h3>09</h3></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="intro-header">
+          <h1 data-animate-variant="slide" data-animate-on-scroll="true">
+            We observe distant worlds
+          </h1>
+        </div>
+
+        <div class="intro-copy">
+          <div class="intro-copy-wrapper">
+            <h3>
+              From remote colonies to deserted outposts, every location we reach
+              reveals signs of structures, motion and presence that do not exist
+              within our own skies. Some appear stable, others collapse as soon
+              as they are recorded.
+            </h3>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="featured-missions-header">
+      <h1 data-animate-variant="slide" data-animate-on-scroll="true">
+        Highlighted <br />
+        Missions
+      </h1>
+    </section>
+
+    <section class="featured-missions">
+      <div class="featured-missions-list">
+        <a href="/expedition" class="featured-missions-item">
+          <p>01 / 05</p>
+          <h3>Solar Ridge</h3>
+          <div class="featured-mission-item-img">
+            <img src="/index/highlight_img_01.jpg" alt="" />
+          </div>
+          <p>[ Field Report ]</p>
+        </a>
+
+        <a href="/expedition" class="featured-missions-item">
+          <p>02 / 05</p>
+          <h3>Crystalline Basin</h3>
+          <div class="featured-mission-item-img">
+            <img src="/index/highlight_img_02.jpg" alt="" />
+          </div>
+          <p>[ Surface Record ]</p>
+        </a>
+
+        <a href="/expedition" class="featured-missions-item">
+          <p>03 / 05</p>
+          <h3>Luminar Signal</h3>
+          <div class="featured-mission-item-img">
+            <img src="/index/highlight_img_03.jpg" alt="" />
+          </div>
+          <p>[ Signal Study ]</p>
+        </a>
+
+        <a href="/expedition" class="featured-missions-item">
+          <p>04 / 05</p>
+          <h3>Valley Structures</h3>
+          <div class="featured-mission-item-img">
+            <img src="/index/highlight_img_04.jpg" alt="" />
+          </div>
+          <p>[ Structure Log ]</p>
+        </a>
+
+        <a href="/expedition" class="featured-missions-item">
+          <p>05 / 05</p>
+          <h3>Emerald Horizon</h3>
+          <div class="featured-mission-item-img">
+            <img src="/index/highlight_img_05.jpg" alt="" />
+          </div>
+          <p>[ Horizon Scan ]</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="cta-content">
+        <div class="cta-logo">
+          <img src="/index/logo_cta.png" alt="" />
+        </div>
+
+        <div class="cta-copy">
+          <p class="bodyCopy lg">
+            Send a message to the observatory. Our field units review incoming
+            transmissions and respond as soon as a secure link is established.
+          </p>
+        </div>
+
+        <div class="btn">
+          <a href="/contact" class="btn"
+            ><span class="btn-line"></span>Send Transmission</a
+          >
+        </div>
+      </div>
+
+      <div class="cta-row">
+        <div class="cta-card cta-card-left">
+          <div class="cta-card-frame">
+            <div class="cta-card-img">
+              <img src="/index/cta_img_01.jpg" alt="" />
+            </div>
+            <div class="cta-card-gradient"></div>
+          </div>
+        </div>
+
+        <div class="cta-card cta-card-right">
+          <div class="cta-card-frame">
+            <div class="cta-card-img">
+              <img src="/index/cta_img_02.jpg" alt="" />
+            </div>
+            <div class="cta-card-gradient"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-row">
+        <div class="cta-card cta-card-left">
+          <div class="cta-card-frame">
+            <div class="cta-card-img">
+              <img src="/index/cta_img_03.jpg" alt="" />
+            </div>
+            <div class="cta-card-gradient"></div>
+          </div>
+        </div>
+
+        <div class="cta-card cta-card-right">
+          <div class="cta-card-frame">
+            <div class="cta-card-img">
+              <img src="/index/cta_img_04.jpg" alt="" />
+            </div>
+            <div class="cta-card-gradient"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-row">
+        <div class="cta-card cta-card-left">
+          <div class="cta-card-frame">
+            <div class="cta-card-img">
+              <img src="/index/cta_img_05.jpg" alt="" />
+            </div>
+            <div class="cta-card-gradient"></div>
+          </div>
+        </div>
+
+        <div class="cta-card cta-card-right">
+          <div class="cta-card-frame">
+            <div class="cta-card-img">
+              <img src="/index/cta_img_06.jpg" alt="" />
+            </div>
+            <div class="cta-card-gradient"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-container">
+        <div class="footer-bg-container"></div>
+
+        <div class="footer-content">
+          <div class="footer-content-meta">
+            <div class="footer-content-col">
+              <h3>Send a signal if you want to connect</h3>
+
+              <div class="footer-form">
+                <input type="text" placeholder="Unit Address" />
+
+                <div class="btn">
+                  <a href="/contact" class="btn"
+                    ><span class="btn-line"></span>Transmit Message</a
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="footer-content-col">
+              <p class="bodyCopy">
+                Orbit Matter is an independent observatory lab devoted to quiet
+                study and creative exploration. Every discovery is recorded,
+                decoded and shared with those who wander through our outpost.
+              </p>
+
+              <div class="footer-socials">
+                <div class="footer-social">
+                  <a href="/contact">[ Instagram ]</a>
+                </div>
+                <div class="footer-social">
+                  <a href="/contact">[ YouTube Signals ]</a>
+                </div>
+                <div class="footer-social">
+                  <a href="/contact">[ Twitter ]</a>
+                </div>
+                <div class="footer-social">
+                  <a href="/contact">[ LinkedIn ]</a>
+                </div>
+                <div class="footer-social">
+                  <a href="/contact">[ GitHub Repository ]</a>
+                </div>
+                <div class="footer-social">
+                  <a href="/contact">[ Discord Hub ]</a>
+                </div>
+                <div class="footer-social">
+                  <a href="/contact">[ Dribbble ]</a>
+                </div>
+                <div class="footer-social">
+                  <a href="/contact">[ Behance Archive ]</a>
+                </div>
+                <div class="footer-social">
+                  <a href="/contact">[ Homebase ]</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer-content-meta">
+            <div class="footer-content-col">
+              <p>[ Constructed by Codegrid ]</p>
+              <p>[ Template Release / Nov 2025 ]</p>
+            </div>
+
+            <div class="footer-content-col">
+              <h1>Orbit Matter&copy;</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        if (sessionStorage.getItem("pageTransition") === "true") {
+          let s = document.createElement("style");
+          s.setAttribute("data-transition", "");
+          s.textContent =
+            ".transition-grid{background-color:var(--base-400);pointer-events:auto;}";
+          (document.head || document.documentElement).appendChild(s);
+        }
+      })();
+    </script>
+
+    <script type="module" src="/js/lenis-scroll.js"></script>
+    <script type="module" src="/js/preloader.js"></script>
+    <script type="module" src="/js/nav.js"></script>
+    <script type="module" src="/js/interactive-grid.js"></script>
+    <script type="module" src="/js/transition.js"></script>
+    <script type="module" src="/js/home.js"></script>
+    <script type="module" src="/js/cta.js"></script>
+    <script type="module" src="/js/animated-copy.js"></script>
+  </body>
+</html>
