@@ -8,9 +8,10 @@ import "./Navigation.css";
 
 interface NavigationProps {
   links: NavLink[];
+  onLinkClick?: (href: string) => void;
 }
 
-export default function Navigation({ links }: NavigationProps) {
+export default function Navigation({ links, onLinkClick }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleToggle = useCallback((e: React.MouseEvent) => {

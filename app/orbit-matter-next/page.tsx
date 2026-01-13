@@ -52,7 +52,7 @@ export default function OrbitMatterHome() {
     <>
       <GooFilter />
       
-      {isLoading && <Preloader onComplete={handlePreloaderComplete} />}
+      {isLoading && <Preloader onComplete={handlePreloaderComplete} isVisible={isLoading} />}
       
       {showTransition && <TransitionGrid />}
       
