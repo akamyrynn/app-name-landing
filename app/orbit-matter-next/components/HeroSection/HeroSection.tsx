@@ -89,7 +89,7 @@ export default function HeroSection({
         </div>
 
         {/* Right side - Controls Panel */}
-        <div className="configurator-controls">
+        <div className="configurator-controls" data-lenis-prevent>
           <div className="controls-scroll">
             {/* Material Selection */}
             <div className="control-section">
