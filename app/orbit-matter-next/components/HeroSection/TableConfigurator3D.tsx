@@ -2,7 +2,7 @@
 
 import { useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Environment } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { TableMaterial, TableCutout } from "../../utils/pageData";
 
@@ -122,8 +122,6 @@ export default function TableConfigurator3D({
         maxDistance={8}
         maxPolarAngle={Math.PI / 2}
       />
-
-      <Environment preset="studio" />
     </Canvas>
   );
 }
