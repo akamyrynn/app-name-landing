@@ -1,16 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState, Suspense } from "react";
-import Image from "next/image";
+import { useState, Suspense } from "react";
 import dynamic from "next/dynamic";
-import gsap from "gsap";
-import { getAnimationDelay } from "../../utils/animations";
+import {
+  TABLE_MATERIALS,
+  TABLE_SHAPES,
+  CUTOUT_TYPES,
+  TableMaterial,
+  TableCutout,
+} from "../../utils/pageData";
 import "./HeroSection.css";
 
-// Dynamic import for 3D model (client-side only)
-const IPhoneModel = dynamic(() => import("./IPhoneModel"), {
+const TableConfigurator3D = dynamic(() => import("./TableConfigurator3D"), {
   ssr: false,
-  loading: () => <div className="hero-model-loading" />,
+  loading: () => <div className="configurator-loading">Загрузка 3D...</div>,
 });
 
 interface HeroSectionProps {
@@ -21,159 +24,217 @@ interface HeroSectionProps {
   isPreloaderShowing: boolean;
 }
 
-// Pure function for testing - formats time for hero timer
-export function formatHeroTimer(date: Date, timezone: string = "America/Toronto"): string {
-  const options: Intl.DateTimeFormatOptions = {
-    timeZone: timezone,
-    hour12: false,
-    hour: "2-digit",
-    minute: "2-digit",
-  };
-
-  const timeString = date.toLocaleString("en-US", options);
-  const hour = parseInt(timeString.split(":")[0]);
-  const sector = Math.floor(hour / 4) + 1;
-  const sectorFormatted = String(sector).padStart(2, "0");
-
-  return `Zone ${sectorFormatted} __ ${timeString}`;
-}
-
 export default function HeroSection({
   title,
   bodyCopy,
-  imageSrc,
-  callouts,
-  isPreloaderShowing,
 }: HeroSectionProps) {
-  const [timerText, setTimerText] = useState("Zone 00 __ 00:00");
-  const timerRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const copyRef = useRef<HTMLParagraphElement>(null);
-  const calloutRefs = useRef<(HTMLParagraphElement | null)[]>([]);
+  // Table configuration state
+  const [selectedMaterial, setSelectedMaterial] = useState<TableMaterial>(TABLE_MATERIALS[0]);
+  const [width, setWidth] = useState(120);
+  const [length, setLength] = useState(80);
+  const [thickness, setThickness] = useState(4);
+  const [shape, setShape] = useState("rectangle");
+  const [cutouts, setCutouts] = useState<TableCutout[]>([]);
 
-
-  // Timer update
-  useEffect(() => {
-    const updateTime = () => {
-      setTimerText(formatHeroTimer(new Date()));
+  const addCutout = (type: string) => {
+    const newCutout: TableCutout = {
+      id: `cutout-${Date.now()}`,
+      type,
+      x: 0,
+      y: 0,
+      width: 30,
+      height: 40,
     };
+    setCutouts([...cutouts, newCutout]);
+  };
 
-    updateTime();
-    const interval = setInterval(updateTime, 60000);
-    return () => clearInterval(interval);
-  }, []);
+  const removeCutout = (id: string) => {
+    setCutouts(cutouts.filter((c) => c.id !== id));
+  };
 
-  // Animations
-  useEffect(() => {
-    const timer = timerRef.current;
-    const titleEl = titleRef.current;
-    const copyEl = copyRef.current;
+  const exportToPDF = () => {
+    alert("Экспорт в PDF - функция в разработке");
+  };
 
-    if (!timer || !titleEl || !copyEl) return;
-
-    const timerDelay = getAnimationDelay(1, isPreloaderShowing);
-    const titleDelay = getAnimationDelay(0.6, isPreloaderShowing);
-    const copyDelay = getAnimationDelay(0.75, isPreloaderShowing);
-
-    // Timer flicker animation
-    gsap.set(timer, { opacity: 0 });
-    gsap.to(timer, {
-      delay: timerDelay,
-      duration: 0.1,
-      opacity: 1,
-      ease: "power2.inOut",
-      repeat: 4,
-    });
-
-    // Title slide animation (simplified - full SplitText would need GSAP Club)
-    gsap.set(titleEl, { opacity: 0, y: 50 });
-    gsap.to(titleEl, {
-      delay: titleDelay,
-      duration: 0.75,
-      opacity: 1,
-      y: 0,
-      ease: "power3.out",
-    });
-
-    // Body copy slide animation
-    gsap.set(copyEl, { opacity: 0, y: 30 });
-    gsap.to(copyEl, {
-      delay: copyDelay,
-      duration: 0.75,
-      opacity: 1,
-      y: 0,
-      ease: "power3.out",
-    });
-
-    // Callout flicker animations
-    calloutRefs.current.forEach((callout, index) => {
-      if (!callout) return;
-      const calloutDelay = getAnimationDelay(0.85 + index * 0.15, isPreloaderShowing);
-      gsap.set(callout, { opacity: 0 });
-      gsap.to(callout, {
-        delay: calloutDelay,
-        duration: 0.05,
-        opacity: 1,
-        ease: "power2.inOut",
-        stagger: {
-          amount: 0.5,
-          from: "random",
-        },
-      });
-    });
-  }, [isPreloaderShowing]);
+  const addToCart = () => {
+    alert("Добавлено в корзину!");
+  };
 
   const titleLines = title.split("\n");
 
   return (
-    <section className="hero">
-      <div className="hero-container">
-        <div className="hero-bg"></div>
+    <section className="hero-configurator">
+      <div className="configurator-container">
+        {/* Left side - 3D Viewer */}
+        <div className="configurator-viewer">
+          <div className="viewer-header">
+            <h1>
+              {titleLines.map((line, i) => (
+                <span key={i}>
+                  {line}
+                  {i < titleLines.length - 1 && <br />}
+                </span>
+              ))}
+            </h1>
+            <p className="viewer-subtitle">{bodyCopy}</p>
+          </div>
 
-        <div className="hero-model-fullscreen">
-          <Suspense fallback={<div className="hero-model-loading" />}>
-            <IPhoneModel />
-          </Suspense>
+          <div className="viewer-canvas">
+            <Suspense fallback={<div className="configurator-loading">Загрузка...</div>}>
+              <TableConfigurator3D
+                material={selectedMaterial}
+                width={width / 50}
+                length={length / 50}
+                thickness={thickness / 50}
+                shape={shape}
+                cutouts={cutouts}
+              />
+            </Suspense>
+          </div>
+
+          <div className="viewer-info">
+            <div className="info-item">
+              <span className="info-label">Размеры:</span>
+              <span className="info-value">{width} × {length} × {thickness} см</span>
+            </div>
+            <div className="info-item">
+              <span className="info-label">Материал:</span>
+              <span className="info-value">{selectedMaterial.name}</span>
+            </div>
+            <div className="info-item">
+              <span className="info-label">Форма:</span>
+              <span className="info-value">
+                {TABLE_SHAPES.find(s => s.id === shape)?.name}
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div className="hero-content">
-          <div className="container">
-            <div className="hero-content-nav">
-              <div className="hero-timer" ref={timerRef}>
-                <p>{timerText}</p>
-              </div>
-            </div>
-
-            <div className="hero-content-main">
-              <div className="hero-content-header">
-                <h1 ref={titleRef}>
-                  {titleLines.map((line, i) => (
-                    <span key={i}>
-                      {line}
-                      {i < titleLines.length - 1 && <br />}
-                    </span>
-                  ))}
-                </h1>
-              </div>
-            </div>
-
-            <div className="hero-content-footer">
-              <div className="hero-footer-copy">
-                <p className="bodyCopy" ref={copyRef}>
-                  {bodyCopy}
-                </p>
-              </div>
-
-              <div className="hero-callout">
-                {callouts.map((callout, index) => (
-                  <p
-                    key={index}
-                    ref={(el) => { calloutRefs.current[index] = el; }}
+        {/* Right side - Controls Panel */}
+        <div className="configurator-controls">
+          <div className="controls-scroll">
+            {/* Material Selection */}
+            <div className="control-section">
+              <h3 className="control-title">Материал</h3>
+              <div className="control-grid">
+                {TABLE_MATERIALS.map((mat) => (
+                  <button
+                    key={mat.id}
+                    className={`control-card ${selectedMaterial.id === mat.id ? "active" : ""}`}
+                    onClick={() => setSelectedMaterial(mat)}
                   >
-                    {callout}
-                  </p>
+                    <div
+                      className="material-preview"
+                      style={{ backgroundColor: mat.color }}
+                    />
+                    <span className="control-label">{mat.name}</span>
+                  </button>
                 ))}
               </div>
+            </div>
+
+            {/* Shape Selection */}
+            <div className="control-section">
+              <h3 className="control-title">Форма столешницы</h3>
+              <div className="control-grid">
+                {TABLE_SHAPES.map((s) => (
+                  <button
+                    key={s.id}
+                    className={`control-btn ${shape === s.id ? "active" : ""}`}
+                    onClick={() => setShape(s.id)}
+                  >
+                    {s.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Dimensions */}
+            <div className="control-section">
+              <h3 className="control-title">Размеры (см)</h3>
+              
+              <div className="control-slider">
+                <label>
+                  <span>Длина: {width} см</span>
+                  <input
+                    type="range"
+                    min="60"
+                    max="300"
+                    value={width}
+                    onChange={(e) => setWidth(Number(e.target.value))}
+                  />
+                </label>
+              </div>
+
+              <div className="control-slider">
+                <label>
+                  <span>Ширина: {length} см</span>
+                  <input
+                    type="range"
+                    min="40"
+                    max="200"
+                    value={length}
+                    onChange={(e) => setLength(Number(e.target.value))}
+                  />
+                </label>
+              </div>
+
+              <div className="control-slider">
+                <label>
+                  <span>Толщина: {thickness} см</span>
+                  <input
+                    type="range"
+                    min="2"
+                    max="10"
+                    value={thickness}
+                    onChange={(e) => setThickness(Number(e.target.value))}
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Cutouts */}
+            <div className="control-section">
+              <h3 className="control-title">Вырезы</h3>
+              <div className="control-grid">
+                {CUTOUT_TYPES.map((cutout) => (
+                  <button
+                    key={cutout.id}
+                    className="control-btn"
+                    onClick={() => addCutout(cutout.id)}
+                  >
+                    + {cutout.name}
+                  </button>
+                ))}
+              </div>
+
+              {cutouts.length > 0 && (
+                <div className="cutouts-list">
+                  {cutouts.map((cutout) => (
+                    <div key={cutout.id} className="cutout-item">
+                      <span>
+                        {CUTOUT_TYPES.find(t => t.id === cutout.type)?.name}
+                      </span>
+                      <button
+                        className="cutout-remove"
+                        onClick={() => removeCutout(cutout.id)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="control-section">
+              <button className="control-btn-primary" onClick={addToCart}>
+                Добавить в корзину
+              </button>
+              <button className="control-btn-secondary" onClick={exportToPDF}>
+                Экспорт в PDF
+              </button>
             </div>
           </div>
         </div>
