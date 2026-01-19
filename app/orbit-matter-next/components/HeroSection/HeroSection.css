@@ -2,20 +2,21 @@
 .hero-configurator {
   position: relative;
   width: 100%;
-  min-height: 150vh;
+  min-height: 100vh;
   padding: 1rem;
+  padding-top: 6rem;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 8rem;
 }
 
 .configurator-container {
   width: 100%;
-  max-width: 1600px;
+  max-width: 1800px;
+  height: calc(100vh - 7rem);
   display: flex;
   gap: 1rem;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 /* Left Side - 3D Viewer (Dark Card) */
@@ -23,34 +24,19 @@
   flex: 1;
   background-color: var(--base-400);
   border-radius: 1rem;
-  padding: 3rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
   position: relative;
   overflow: hidden;
-  min-height: 120vh;
-}
-
-.viewer-header h1 {
-  font-size: clamp(3rem, 6vw, 5rem);
-  line-height: 1.1;
-  margin-bottom: 1rem;
-}
-
-.viewer-subtitle {
-  font-size: 1rem;
-  opacity: 0.7;
-  max-width: 600px;
-  line-height: 1.6;
 }
 
 .viewer-canvas {
   flex: 1;
+  width: 100%;
+  height: 100%;
   position: relative;
   border-radius: 0.5rem;
   overflow: hidden;
-  background: rgba(0, 0, 0, 0.2);
 }
 
 .configurator-loading {
@@ -63,54 +49,26 @@
   opacity: 0.5;
 }
 
-.viewer-info {
-  display: flex;
-  gap: 2rem;
-  padding: 1.5rem;
-  background: rgba(242, 238, 218, 0.05);
-  border: 1px solid rgba(242, 238, 218, 0.1);
-  border-radius: 0.5rem;
-  backdrop-filter: blur(10px);
-}
-
-.info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.info-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  opacity: 0.5;
-}
-
-.info-value {
-  font-size: 1rem;
-  font-weight: 500;
-}
-
 /* Right Side - Controls Panel (Light Card) */
 .configurator-controls {
-  width: 400px;
+  width: 420px;
   background-color: #F2EEDA;
   border-radius: 1rem;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  position: sticky;
-  top: 8rem;
-  max-height: calc(100vh - 10rem);
+  height: 100%;
 }
 
 .controls-scroll {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  height: 100%;
 }
 
 .controls-scroll::-webkit-scrollbar {
@@ -357,21 +315,21 @@
 
   .configurator-container {
     flex-direction: column;
+    height: auto;
   }
 
   .configurator-viewer {
-    min-height: 80vh;
+    min-height: 70vh;
   }
 
   .configurator-controls {
     width: 100%;
+    height: auto;
     max-height: none;
-    position: relative;
-    top: 0;
   }
 
   .controls-scroll {
-    max-height: none;
+    height: auto;
   }
 }
 

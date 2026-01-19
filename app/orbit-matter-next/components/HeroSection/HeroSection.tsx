@@ -67,18 +67,6 @@ export default function HeroSection({
       <div className="configurator-container">
         {/* Left side - 3D Viewer */}
         <div className="configurator-viewer">
-          <div className="viewer-header">
-            <h1>
-              {titleLines.map((line, i) => (
-                <span key={i}>
-                  {line}
-                  {i < titleLines.length - 1 && <br />}
-                </span>
-              ))}
-            </h1>
-            <p className="viewer-subtitle">{bodyCopy}</p>
-          </div>
-
           <div className="viewer-canvas">
             <Suspense fallback={<div className="configurator-loading">Загрузка...</div>}>
               <TableConfigurator3D
@@ -90,23 +78,6 @@ export default function HeroSection({
                 cutouts={cutouts}
               />
             </Suspense>
-          </div>
-
-          <div className="viewer-info">
-            <div className="info-item">
-              <span className="info-label">Размеры:</span>
-              <span className="info-value">{width} × {length} × {thickness} см</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Материал:</span>
-              <span className="info-value">{selectedMaterial.name}</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Форма:</span>
-              <span className="info-value">
-                {TABLE_SHAPES.find(s => s.id === shape)?.name}
-              </span>
-            </div>
           </div>
         </div>
 
