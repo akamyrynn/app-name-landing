@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import "./orbit-matter-next/globals.css";
 
 export const metadata: Metadata = {
-  title: "App Name - Video Conferencing & Live Streaming Platform",
-  description: "Seamless video conferencing and live streaming for teams and creators. Enterprise-grade corporate communication and broadcasting platform with HD quality and 24/7 support.",
-  keywords: "video conferencing, live streaming, corporate communication, enterprise video, broadcasting platform, team collaboration, HD streaming",
+  title: "3D Конфигуратор Столешниц - Дизайн и Заказ Онлайн",
+  description: "Интерактивный 3D конфигуратор столешниц. Выбирайте материалы (дерево, камень, металл), настраивайте размеры, добавляйте вырезы. Реалистичная визуализация в реальном времени.",
+  keywords: "3д конфигуратор столешниц, столешница на заказ, дизайн столешницы онлайн, 3d визуализация мебели, конфигуратор мебели, столешница из камня, столешница из дерева, кухонная столешница",
   openGraph: {
-    title: "App Name - Connect Everywhere",
-    description: "Transform your communication with crystal clear video conferencing and live streaming",
+    title: "3D Конфигуратор Столешниц - Создайте Идеальную Столешницу",
+    description: "Интерактивный 3D конфигуратор для дизайна столешниц. Выбор материалов, размеров, форм и вырезов с мгновенной визуализацией",
     type: "website",
   },
 };
