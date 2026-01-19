@@ -36,6 +36,15 @@ export default function HeroSection({
   const [shape, setShape] = useState("rectangle");
   const [cutouts, setCutouts] = useState<TableCutout[]>([]);
 
+  // Determine if material is dark
+  const isDarkMaterial = () => {
+    const color = selectedMaterial.color.toLowerCase();
+    // Check if color is dark (granite, walnut, steel)
+    return selectedMaterial.id === 'granite' || 
+           selectedMaterial.id === 'walnut' || 
+           selectedMaterial.id === 'steel';
+  };
+
   const addCutout = (type: string) => {
     const newCutout: TableCutout = {
       id: `cutout-${Date.now()}`,
@@ -60,13 +69,11 @@ export default function HeroSection({
     alert("Добавлено в корзину!");
   };
 
-  const titleLines = title.split("\n");
-
   return (
     <section className="hero-configurator">
       <div className="configurator-container">
         {/* Left side - 3D Viewer */}
-        <div className="configurator-viewer">
+        <div className={`configurator-viewer ${isDarkMaterial() ? 'light-bg' : ''}`}>
           <div className="viewer-canvas">
             <Suspense fallback={<div className="configurator-loading">Загрузка...</div>}>
               <TableConfigurator3D
@@ -107,11 +114,11 @@ export default function HeroSection({
             {/* Shape Selection */}
             <div className="control-section">
               <h3 className="control-title">Форма столешницы</h3>
-              <div className="control-grid">
+              <div className="shape-cards">
                 {TABLE_SHAPES.map((s) => (
                   <button
                     key={s.id}
-                    className={`control-btn ${shape === s.id ? "active" : ""}`}
+                    className={`shape-card ${shape === s.id ? "active" : ""}`}
                     onClick={() => setShape(s.id)}
                   >
                     {s.name}

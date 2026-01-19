@@ -57,11 +57,6 @@ export default function OrbitMatterHome() {
       {showTransition && <TransitionGrid />}
       
       <InteractiveGrid />
-      
-      <Navigation 
-        links={NAV_LINKS} 
-        onLinkClick={handleNavClick}
-      />
 
       <main>
         <HeroSection
@@ -70,36 +65,6 @@ export default function OrbitMatterHome() {
           imageSrc={HERO_DATA.imageSrc}
           callouts={HERO_DATA.callouts}
           isPreloaderShowing={isLoading}
-        />
-
-        <IntroSection
-          stats={STATS}
-          heading={INTRO_DATA.heading}
-          bodyCopy={INTRO_DATA.bodyCopy}
-          isPreloaderShowing={isLoading}
-        />
-
-        <FeaturedMissionsSection 
-          heading="Our\nSolutions"
-          missions={MISSIONS} 
-        />
-
-        <CTASection
-          logoSrc={CTA_DATA.logoSrc}
-          bodyCopy={CTA_DATA.bodyCopy}
-          buttonText={CTA_DATA.buttonText}
-          buttonHref={CTA_DATA.buttonHref}
-        />
-
-        <ShowcaseSection cards={CTA_CARDS[0]} />
-
-        <Footer
-          heading={FOOTER_DATA.heading}
-          bodyCopy={FOOTER_DATA.bodyCopy}
-          copyright={FOOTER_DATA.copyright}
-          credits={FOOTER_DATA.credits}
-          socialLinks={SOCIAL_LINKS}
-          telegramLink={FOOTER_DATA.telegramLink}
         />
       </main>
     </>
