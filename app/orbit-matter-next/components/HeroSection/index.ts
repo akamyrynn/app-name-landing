@@ -1,1 +1,1 @@
-export { default, formatHeroTimer } from "./HeroSection";
+export { default } from "./HeroSection";
