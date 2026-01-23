@@ -1,0 +1,267 @@
+/* Checkout Modal - Swiss Industrial Design */
+.checkout-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.checkout-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.checkout-modal {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--white);
+    border: 1px solid var(--grey);
+    border-radius: 2px;
+    padding: 20px;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: var(--black);
+}
+
+.checkout-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--grey);
+    border-radius: 2px;
+    cursor: pointer;
+    color: var(--black);
+}
+
+.checkout-close:hover {
+    background: var(--grey);
+}
+
+/* Header */
+.checkout-header {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--grey);
+}
+
+.checkout-header h2 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 4px;
+    color: var(--black);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.checkout-header p {
+    font-size: 11px;
+    color: var(--dark-grey);
+    margin: 0;
+}
+
+/* Content Grid */
+.checkout-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Summary Section */
+.checkout-summary {
+    background: var(--light-grey);
+    border-radius: 2px;
+    padding: 12px;
+}
+
+.checkout-summary h3 {
+    font-size: 11px;
+    font-weight: 500;
+    margin: 0 0 12px;
+    color: var(--dark-grey);
+    letter-spacing: 0.05em;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--grey);
+    font-size: 11px;
+}
+
+.summary-label {
+    color: var(--dark-grey);
+}
+
+.summary-value {
+    color: var(--black);
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    margin-top: 6px;
+    font-size: 12px;
+}
+
+.total-price {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--black);
+}
+
+/* Form Section */
+.checkout-form h3 {
+    font-size: 11px;
+    font-weight: 500;
+    margin: 0 0 12px;
+    color: var(--dark-grey);
+    letter-spacing: 0.05em;
+}
+
+.form-field {
+    margin-bottom: 12px;
+}
+
+.form-field label {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: var(--dark-grey);
+    letter-spacing: 0.05em;
+}
+
+.form-field input {
+    width: 100%;
+    padding: 8px 10px;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px;
+    background: var(--light-grey);
+    border: 1px solid var(--grey);
+    border-radius: 2px;
+    outline: none;
+    color: var(--black);
+    text-transform: none;
+}
+
+.form-field input::placeholder {
+    color: var(--dark-grey);
+    text-transform: none;
+}
+
+.form-field input:focus {
+    border-color: var(--black);
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.btn-cancel,
+.btn-submit {
+    flex: 1;
+    padding: 10px 16px;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background: var(--grey);
+    border: none;
+    color: var(--black);
+}
+
+.btn-cancel:hover {
+    background: var(--dark-grey-2);
+}
+
+.btn-submit {
+    background: var(--black);
+    border: none;
+    color: var(--white);
+}
+
+.btn-submit:hover {
+    background: #333;
+}
+
+.btn-submit:disabled,
+.btn-cancel:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Success State */
+.checkout-success {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.success-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--black);
+    color: var(--white);
+    font-size: 20px;
+    font-weight: 500;
+    border-radius: 2px;
+}
+
+.checkout-success h2 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 8px;
+    color: var(--black);
+}
+
+.checkout-success p {
+    font-size: 11px;
+    color: var(--dark-grey);
+    margin: 0;
+    text-transform: none;
+}
+
+/* Scrollbar */
+.checkout-modal::-webkit-scrollbar {
+    width: 4px;
+}
+
+.checkout-modal::-webkit-scrollbar-track {
+    background: var(--light-grey);
+}
+
+.checkout-modal::-webkit-scrollbar-thumb {
+    background: var(--dark-grey);
+    border-radius: 2px;
+}

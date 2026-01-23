@@ -1,25 +1,22 @@
 import type { Metadata } from "next";
-import "./orbit-matter-next/globals.css";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "3D Конфигуратор Столешниц - Дизайн и Заказ Онлайн",
-  description: "Интерактивный 3D конфигуратор столешниц. Выбирайте материалы (дерево, камень, металл), настраивайте размеры, добавляйте вырезы. Реалистичная визуализация в реальном времени.",
-  keywords: "3д конфигуратор столешниц, столешница на заказ, дизайн столешницы онлайн, 3d визуализация мебели, конфигуратор мебели, столешница из камня, столешница из дерева, кухонная столешница",
-  openGraph: {
-    title: "3D Конфигуратор Столешниц - Создайте Идеальную Столешницу",
-    description: "Интерактивный 3D конфигуратор для дизайна столешниц. Выбор материалов, размеров, форм и вырезов с мгновенной визуализацией",
-    type: "website",
-  },
+  title: "3д конфигуратор ",
+  description: "в разработке",
+  authors: [{ name: "ryyn" }],
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+      </body>
     </html>
   );
 }

@@ -1,0 +1,182 @@
+/* Admin Dashboard - Swiss Industrial Design */
+.admin-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: var(--black);
+  background-color: var(--white);
+  min-height: 100vh;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  background: var(--white);
+  padding: 12px;
+  border: 1px solid var(--grey);
+  border-radius: 2px;
+}
+
+.admin-header h1 {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.refresh-btn,
+.back-link {
+  padding: 6px 12px;
+  border-radius: 2px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.refresh-btn {
+  background: var(--black);
+  color: var(--white);
+  border: none;
+}
+
+.refresh-btn:hover {
+  background: #333;
+}
+
+.back-link {
+  background: var(--white);
+  border: 1px solid var(--grey);
+  color: var(--black);
+}
+
+.back-link:hover {
+  background: var(--light-grey);
+}
+
+.error-banner {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 10px;
+  border-radius: 2px;
+  margin-bottom: 20px;
+  font-size: 11px;
+}
+
+.table-responsive {
+  background: var(--white);
+  border: 1px solid var(--grey);
+  border-radius: 2px;
+  overflow-x: auto;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.orders-table th,
+.orders-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--grey);
+  vertical-align: top;
+}
+
+.orders-table th {
+  background: var(--light-grey);
+  font-weight: 500;
+  color: var(--dark-grey);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+.client-info,
+.config-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.client-info a {
+  color: var(--dark-grey);
+  text-decoration: none;
+}
+
+.client-info a:hover {
+  text-decoration: underline;
+}
+
+.config-summary small {
+  color: var(--dark-grey);
+  font-size: 10px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.status-new {
+  color: var(--black);
+  background: #dbeafe;
+  border-color: #bfdbfe;
+}
+
+.status-processing {
+  color: var(--black);
+  background: #fef3c7;
+  border-color: #fde68a;
+}
+
+.status-completed {
+  color: var(--black);
+  background: #d1fae5;
+  border-color: #a7f3d0;
+}
+
+.status-cancelled {
+  color: var(--black);
+  background: #fee2e2;
+  border-color: #fecaca;
+}
+
+.status-select {
+  padding: 4px;
+  border-radius: 2px;
+  border: 1px solid var(--grey);
+  font-size: 10px;
+  font-family: inherit;
+  text-transform: uppercase;
+  background: var(--white);
+  cursor: pointer;
+}
+
+/* Row Styling */
+tr.status-new td {
+  background-color: #f8fafc;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--dark-grey);
+}
