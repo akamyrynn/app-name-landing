@@ -362,10 +362,9 @@ export default function AdminPage() {
 // ============================================
 // PANEL HEADER COMPONENT
 // ============================================
-function PanelHeader({ title, count, description, onAdd, addLabel }: {
+function PanelHeader({ title, count, onAdd, addLabel }: {
     title: string;
     count?: number;
-    description: string;
     onAdd?: () => void;
     addLabel?: string;
 }) {
@@ -373,7 +372,6 @@ function PanelHeader({ title, count, description, onAdd, addLabel }: {
         <div className="panel-header-full">
             <div className="panel-header-text">
                 <h2>{title} {count !== undefined && <span className="count">({count})</span>}</h2>
-                <p className="panel-description">{description}</p>
             </div>
             {onAdd && (
                 <button className="btn-action btn-primary" onClick={onAdd}>
@@ -393,7 +391,6 @@ function OrdersPanel({ orders, onStatusChange }: { orders: Order[], onStatusChan
             <PanelHeader
                 title="Заявки"
                 count={orders.length}
-                description="Все заявки от клиентов. Меняйте статус для отслеживания прогресса."
             />
             <div className="table-responsive">
                 <table className="admin-table">
@@ -465,7 +462,6 @@ function MaterialsPanel({ materials, onAdd, onEdit, onDelete, onToggle }: {
             <PanelHeader
                 title="Материалы столешницы"
                 count={materials.length}
-                description="Текстуры дерева, которые клиент выбирает в конфигураторе. Загружайте 3 текстуры: Color, Normal, Roughness."
                 onAdd={onAdd}
                 addLabel="Добавить материал"
             />
@@ -530,7 +526,6 @@ function CoatingsPanel({ coatings, onAdd, onEdit, onDelete, onToggle }: {
             <PanelHeader
                 title="Покрытия OSMO"
                 count={coatings.length}
-                description="Масла и лазури для финишной обработки. Влияют на цвет и глянец материала."
                 onAdd={onAdd}
                 addLabel="Добавить покрытие"
             />
@@ -590,7 +585,6 @@ function ModelsPanel({ models, onAdd, onEdit, onDelete, onToggle }: {
             <PanelHeader
                 title="3D Модели"
                 count={models.length}
-                description="Управление 3D моделями аксессуаров."
                 onAdd={onAdd}
                 addLabel="Добавить модель"
             />
@@ -663,7 +657,6 @@ function PricingPanel({ rules, onUpdate, onToggle }: {
         <div className="glass-panel-admin">
             <PanelHeader
                 title="Правила расчёта цены"
-                description="Настройте множители и добавки к цене."
             />
             <div className="pricing-sections">
                 {Object.entries(groupedRules).map(([type, typeRules]) => (
@@ -731,7 +724,6 @@ function DeliveryPanel({ options, onAdd, onEdit, onDelete, onToggle }: {
             <PanelHeader
                 title="Способы доставки"
                 count={options.length}
-                description="Варианты доставки для клиентов. Фиксированные цены работают сразу. Расчёт по API требует настройки."
                 onAdd={onAdd}
                 addLabel="Добавить способ"
             />
@@ -801,7 +793,6 @@ function PaymentsPanel({ methods, onAdd, onEdit, onDelete, onToggle }: {
             <PanelHeader
                 title="Способы оплаты"
                 count={methods.length}
-                description="Методы оплаты заказа. Ручные способы (наличные, счёт) работают сразу. Онлайн-оплата требует подключения API."
                 onAdd={onAdd}
                 addLabel="Добавить способ"
             />
@@ -898,7 +889,6 @@ function SettingsPanel({ settings, onSave }: { settings: any; onSave: () => void
         <div className="glass-panel-admin">
             <PanelHeader
                 title="Технические ограничения"
-                description="Настройка минимальных и максимальных размеров столешницы в конфигураторе."
             />
             <div className="settings-content">
                 <div className="settings-section">
