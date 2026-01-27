@@ -109,6 +109,7 @@ export interface TableMaterial {
   color: string;
   roughness: number;
   metalness: number;
+  pricePerM2: number; // Price per square meter in rubles
   // PBR Texture paths (optional - if not provided, uses color)
   textures?: {
     color: string;
@@ -123,6 +124,7 @@ export interface TableCoating {
   color: string; // Tint color for the coating
   clearcoat: number; // 0 = none, 1 = full gloss
   clearcoatRoughness: number;
+  pricePerM2: number; // Price per square meter in rubles
 }
 
 export interface TableShape {
@@ -143,10 +145,11 @@ export interface TableCutout {
 export const TABLE_MATERIALS: TableMaterial[] = [
   {
     id: "wood051",
-    name: "Материал 1 (1K)",
+    name: "Дуб Светлый",
     color: "#C4A77D",
     roughness: 0.8,
     metalness: 0,
+    pricePerM2: 12000,
     textures: {
       color: "/textures/Wood051_1K-JPG/Wood051_1K-JPG_Color.jpg",
       normal: "/textures/Wood051_1K-JPG/Wood051_1K-JPG_NormalGL.jpg",
@@ -155,10 +158,11 @@ export const TABLE_MATERIALS: TableMaterial[] = [
   },
   {
     id: "wood084",
-    name: "Материал 2 (1K)",
+    name: "Орех Тёмный",
     color: "#5C4033",
     roughness: 0.7,
     metalness: 0,
+    pricePerM2: 15000,
     textures: {
       color: "/textures/Wood084B_1K-JPG/Wood084B_1K-JPG_Color.jpg",
       normal: "/textures/Wood084B_1K-JPG/Wood084B_1K-JPG_NormalGL.jpg",
@@ -167,10 +171,11 @@ export const TABLE_MATERIALS: TableMaterial[] = [
   },
   {
     id: "woodfloor048",
-    name: "Материал 3 (1K)",
+    name: "Ясень Натуральный",
     color: "#A0826D",
     roughness: 0.6,
     metalness: 0,
+    pricePerM2: 13000,
     textures: {
       color: "/textures/WoodFloor048_1K-JPG/WoodFloor048_1K-JPG_Color.jpg",
       normal: "/textures/WoodFloor048_1K-JPG/WoodFloor048_1K-JPG_NormalGL.jpg",
@@ -179,42 +184,31 @@ export const TABLE_MATERIALS: TableMaterial[] = [
   },
   {
     id: "wood069",
-    name: "Материал 4 (2K)",
+    name: "Бук Классический",
     color: "#B8956E",
     roughness: 0.75,
     metalness: 0,
+    pricePerM2: 18000,
     textures: {
       color: "/textures/Wood069_2K-JPG/Wood069_2K-JPG_Color.jpg",
       normal: "/textures/Wood069_2K-JPG/Wood069_2K-JPG_NormalGL.jpg",
       roughness: "/textures/Wood069_2K-JPG/Wood069_2K-JPG_Roughness.jpg",
     }
   },
-  {
-    id: "wood009",
-    name: "4K Тест",
-    color: "#C9B896",
-    roughness: 0.7,
-    metalness: 0,
-    textures: {
-      color: "/textures/Wood009_4K-JPG/Wood009_4K-JPG_Color.jpg",
-      normal: "/textures/Wood009_4K-JPG/Wood009_4K-JPG_NormalGL.jpg",
-      roughness: "/textures/Wood009_4K-JPG/Wood009_4K-JPG_Roughness.jpg",
-    }
-  },
 ];
 
-// OSMO Oil Coating - только коды
+// OSMO Oil Coating
 export const TABLE_COATINGS: TableCoating[] = [
-  { id: "none", name: "—", color: "transparent", clearcoat: 0, clearcoatRoughness: 1 },
-  { id: "osmo-3032", name: "3032", color: "#F5E6D3", clearcoat: 0.4, clearcoatRoughness: 0.5 },
-  { id: "osmo-3062", name: "3062", color: "#EDE0CC", clearcoat: 0.25, clearcoatRoughness: 0.7 },
-  { id: "osmo-3040", name: "3040", color: "#F8F4ED", clearcoat: 0.35, clearcoatRoughness: 0.5 },
-  { id: "osmo-3067", name: "3067", color: "#B8B5AD", clearcoat: 0.4, clearcoatRoughness: 0.45 },
-  { id: "osmo-3074", name: "3074", color: "#4A4A48", clearcoat: 0.5, clearcoatRoughness: 0.35 },
-  { id: "osmo-3044", name: "3044", color: "#C9A869", clearcoat: 0.4, clearcoatRoughness: 0.45 },
-  { id: "osmo-3073", name: "3073", color: "#8B6914", clearcoat: 0.45, clearcoatRoughness: 0.4 },
-  { id: "osmo-3075", name: "3075", color: "#1C1C1C", clearcoat: 0.55, clearcoatRoughness: 0.3 },
-  { id: "osmo-3028", name: "3028", color: "#D4A34C", clearcoat: 0.4, clearcoatRoughness: 0.45 },
+  { id: "none", name: "Без покрытия", color: "transparent", clearcoat: 0, clearcoatRoughness: 1, pricePerM2: 0 },
+  { id: "osmo-3032", name: "OSMO 3032", color: "#F5E6D3", clearcoat: 0.4, clearcoatRoughness: 0.5, pricePerM2: 2500 },
+  { id: "osmo-3062", name: "OSMO 3062", color: "#EDE0CC", clearcoat: 0.25, clearcoatRoughness: 0.7, pricePerM2: 2200 },
+  { id: "osmo-3040", name: "OSMO 3040", color: "#F8F4ED", clearcoat: 0.35, clearcoatRoughness: 0.5, pricePerM2: 2800 },
+  { id: "osmo-3067", name: "OSMO 3067", color: "#B8B5AD", clearcoat: 0.4, clearcoatRoughness: 0.45, pricePerM2: 2800 },
+  { id: "osmo-3074", name: "OSMO 3074", color: "#4A4A48", clearcoat: 0.5, clearcoatRoughness: 0.35, pricePerM2: 3000 },
+  { id: "osmo-3044", name: "OSMO 3044", color: "#C9A869", clearcoat: 0.4, clearcoatRoughness: 0.45, pricePerM2: 2500 },
+  { id: "osmo-3073", name: "OSMO 3073", color: "#8B6914", clearcoat: 0.45, clearcoatRoughness: 0.4, pricePerM2: 2800 },
+  { id: "osmo-3075", name: "OSMO 3075", color: "#1C1C1C", clearcoat: 0.55, clearcoatRoughness: 0.3, pricePerM2: 3200 },
+  { id: "osmo-3028", name: "OSMO 3028", color: "#D4A34C", clearcoat: 0.4, clearcoatRoughness: 0.45, pricePerM2: 2500 },
 ];
 
 export const TABLE_SHAPES: TableShape[] = [

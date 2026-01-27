@@ -1,40 +1,20 @@
 "use client";
 
-import { useState, Suspense } from "react";
+"use client";
+
+import { useState, useEffect, Suspense } from "react";
 import dynamic from "next/dynamic";
 import {
-  TABLE_MATERIALS,
   TABLE_SHAPES,
-  TABLE_COATINGS,
   CUTOUT_TYPES,
   TableMaterial,
   TableCutout,
   TableCoating,
 } from "../../utils/pageData";
+import { fetchMaterials, fetchCoatings, fetchPricingRules, PricingRule } from "../../utils/dbService";
 import { generateTechnicalDrawingPDF } from "../../utils/technicalDrawingGenerator";
 import "./HeroSection.css";
 import CheckoutModal from "../CheckoutModal";
-
-const MATERIAL_PRICES: Record<string, number> = {
-  wood051: 12000,
-  wood084: 15000,
-  woodfloor048: 13000,
-  wood069: 18000,  // 2K
-  wood009: 25000,  // 4K Тест
-};
-
-const COATING_PRICES: Record<string, number> = {
-  none: 0,
-  "osmo-3032": 2500,
-  "osmo-3062": 2200,
-  "osmo-3040": 2800,
-  "osmo-3067": 2800,
-  "osmo-3074": 3000,
-  "osmo-3044": 2500,
-  "osmo-3073": 2800,
-  "osmo-3075": 3200,
-  "osmo-3028": 2500,
-};
 
 const TableConfigurator3D = dynamic(() => import("./TableConfigurator3D"), {
   ssr: false,
@@ -53,9 +33,15 @@ export default function HeroSection({
   title,
   bodyCopy,
 }: HeroSectionProps) {
+  // DB Data State
+  const [dbMaterials, setDbMaterials] = useState<TableMaterial[]>([]);
+  const [dbCoatings, setDbCoatings] = useState<TableCoating[]>([]);
+  const [pricingRules, setPricingRules] = useState<PricingRule[]>([]);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+
   // Table configuration state
-  const [selectedMaterial, setSelectedMaterial] = useState<TableMaterial>(TABLE_MATERIALS[0]);
-  const [selectedCoating, setSelectedCoating] = useState<TableCoating>(TABLE_COATINGS[0]);
+  const [selectedMaterial, setSelectedMaterial] = useState<TableMaterial | null>(null);
+  const [selectedCoating, setSelectedCoating] = useState<TableCoating | null>(null);
   const [width, setWidth] = useState(120);
   const [length, setLength] = useState(80);
   const [thickness, setThickness] = useState(4);
@@ -65,18 +51,87 @@ export default function HeroSection({
   // Checkout state
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
+  // Fetch data on mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [mats, coats, rules] = await Promise.all([
+          fetchMaterials(),
+          fetchCoatings(),
+          fetchPricingRules()
+        ]);
+
+        setDbMaterials(mats);
+        setDbCoatings(coats);
+        setPricingRules(rules);
+
+        // Set defaults
+        if (mats.length > 0) setSelectedMaterial(mats[0]);
+        if (coats.length > 0) setSelectedCoating(coats[0]);
+
+        setIsLoadingData(false);
+      } catch (error) {
+        console.error("Failed to load configurator data", error);
+        // Fallback or error state
+        setIsLoadingData(false);
+      }
+    };
+    loadData();
+  }, []);
+
   // Price calculation
   const calculatePrice = () => {
-    const area = (width / 100) * (length / 100); // m2
-    const basePrice = MATERIAL_PRICES[selectedMaterial.id] || 10000;
-    const coatingPrice = COATING_PRICES[selectedCoating.id] || 0;
-    const thicknessFactor = 1 + ((thickness - 4) * 0.05); // +5% for each cm above 4
-    const cutoutsPrice = cutouts.length * 1500;
+    if (!selectedMaterial) return 0;
 
-    let total = (area * basePrice * thicknessFactor) + cutoutsPrice + (area * coatingPrice);
+    // Base area price
+    const areaM2 = (width / 100) * (length / 100);
+    const materialPrice = selectedMaterial.pricePerM2 || 0;
+    let total = areaM2 * materialPrice;
+
+    // Add coating price
+    if (selectedCoating && selectedCoating.pricePerM2) {
+      total += areaM2 * selectedCoating.pricePerM2;
+    }
+
+    // Apply thickness modifier (base is 4cm)
+    const thicknessRule = pricingRules.find(r => r.ruleType === 'thickness' && r.ruleKey === 'per_cm');
+    if (thicknessRule && thickness > 4) {
+      const extraCm = thickness - 4;
+      // Exponential growth for thickness is harsh, maybe linear? Using multiplier as per existing logic
+      // Existing logic was: 1 + ((thickness - 4) * 0.05)
+      // DB rule assumes multiplier (e.g. 1.05) per cm? Or simple adder? 
+      // Let's assume multiplier is "base multiplier per extra cm"
+      // If db multiplier is 1.05, then total * 1.05 for each extra cm
+      total *= Math.pow(thicknessRule.multiplier, extraCm);
+    } else if (!thicknessRule && thickness > 4) {
+      // Fallback logic
+      total *= (1 + ((thickness - 4) * 0.05));
+    }
 
     // Shape complexity
-    if (shape !== 'rectangle') total *= 1.15;
+    const shapeRule = pricingRules.find(r => r.ruleType === 'shape' && r.ruleKey === shape);
+    if (shapeRule) {
+      total *= shapeRule.multiplier;
+      total += shapeRule.fixedAddon;
+    } else if (shape !== 'rectangle') {
+      // Fallback
+      total *= 1.15;
+    }
+
+    // Cutouts
+    let cutoutsPrice = 0;
+    for (const cutout of cutouts) {
+      const cutoutRule = pricingRules.find(r => r.ruleType === 'cutout' && r.ruleKey === cutout.type);
+      if (cutoutRule) {
+        // Apply multiplier to the WHOLE table price? Probably not properly implemented in current scheme
+        // Usually cutout is a fixed addon
+        cutoutsPrice += cutoutRule.fixedAddon;
+      } else {
+        cutoutsPrice += 1500; // Fallback
+      }
+    }
+
+    total += cutoutsPrice;
 
     return Math.round(total / 100) * 100; // Round to 100s
   };
@@ -87,17 +142,48 @@ export default function HeroSection({
       type,
       x: 0,
       y: 0,
-      width: 30 / 50,
-      height: 40 / 50,
-      rotation: 90, // Fix default orientation (perpendicular to table)
+      width: 0.6, // 30cm in 3D units
+      height: 0.8, // 40cm in 3D units
+      rotation: 0,
     };
     setCutouts([...cutouts, newCutout]);
   };
 
+  // Calculate bounds for cutout position based on current table and cutout size
+  const getCutoutBounds = (cutout: TableCutout) => {
+    const tableW = width / 50; // Table width in 3D units
+    const tableL = length / 50; // Table length in 3D units
+    const cutW = cutout.width;
+    const cutH = cutout.height;
+
+    // Account for rotation - when rotated 90 degrees, width/height swap
+    const rotRad = (cutout.rotation || 0) * (Math.PI / 180);
+    const effectiveW = Math.abs(cutW * Math.cos(rotRad)) + Math.abs(cutH * Math.sin(rotRad));
+    const effectiveH = Math.abs(cutW * Math.sin(rotRad)) + Math.abs(cutH * Math.cos(rotRad));
+
+    return {
+      minX: -(tableW / 2) + (effectiveW / 2),
+      maxX: (tableW / 2) - (effectiveW / 2),
+      minY: -(tableL / 2) + (effectiveH / 2),
+      maxY: (tableL / 2) - (effectiveH / 2),
+    };
+  };
+
   const updateCutoutProperty = (id: string, property: keyof TableCutout, value: number) => {
-    setCutouts(cutouts.map(c =>
-      c.id === id ? { ...c, [property]: value } : c
-    ));
+    setCutouts(cutouts.map(c => {
+      if (c.id !== id) return c;
+
+      const updated = { ...c, [property]: value };
+
+      // Clamp position to stay within table bounds
+      const bounds = getCutoutBounds(updated);
+      if (updated.x < bounds.minX) updated.x = bounds.minX;
+      if (updated.x > bounds.maxX) updated.x = bounds.maxX;
+      if (updated.y < bounds.minY) updated.y = bounds.minY;
+      if (updated.y > bounds.maxY) updated.y = bounds.maxY;
+
+      return updated;
+    }));
   };
 
   const removeCutout = (id: string) => {
@@ -105,6 +191,7 @@ export default function HeroSection({
   };
 
   const exportToPDF = async () => {
+    if (!selectedMaterial || !selectedCoating) return;
     await generateTechnicalDrawingPDF({
       material: selectedMaterial,
       coating: selectedCoating,
@@ -123,15 +210,17 @@ export default function HeroSection({
       <div className="configurator-viewer">
         <div className="viewer-canvas">
           <Suspense fallback={<div className="configurator-loading">Загрузка 3D...</div>}>
-            <TableConfigurator3D
-              material={selectedMaterial}
-              coating={selectedCoating}
-              width={width / 50}
-              length={length / 50}
-              thickness={thickness / 50}
-              shape={shape}
-              cutouts={cutouts}
-            />
+            {selectedMaterial && selectedCoating ? (
+              <TableConfigurator3D
+                material={selectedMaterial}
+                coating={selectedCoating}
+                width={width / 50}
+                length={length / 50}
+                thickness={thickness / 50}
+                shape={shape}
+                cutouts={cutouts}
+              />
+            ) : null}
           </Suspense>
         </div>
       </div>
@@ -144,57 +233,155 @@ export default function HeroSection({
         </button>
       </div>
 
-      {/* 3. Left Panel - Sink Position Controls (shows when cutouts exist) */}
+      {/* 3. Left Panel - Sink Position & Size Controls (shows when cutouts exist) */}
       {cutouts.length > 0 && (
         <div className="glass-panel sink-position-panel">
-          {cutouts.map((cutout) => (
-            <div key={cutout.id} className="sink-control-row">
-              <span className="sink-label">
-                {CUTOUT_TYPES.find(t => t.id === cutout.type)?.name}
-              </span>
-              <div className="sink-sliders">
-                <div className="sink-slider-group">
-                  <span className="sink-slider-label">X</span>
-                  <input
-                    type="range"
-                    min={-(width / 50) / 2}
-                    max={(width / 50) / 2}
-                    step={0.05}
-                    value={cutout.x}
-                    onChange={(e) => updateCutoutProperty(cutout.id, 'x', Number(e.target.value))}
-                  />
+          {cutouts.map((cutout) => {
+            const bounds = getCutoutBounds(cutout);
+            // Convert to cm for display
+            const widthCm = Math.round(cutout.width * 50);
+            const heightCm = Math.round(cutout.height * 50);
+            const xCm = Math.round(cutout.x * 50);
+            const yCm = Math.round(cutout.y * 50);
+
+            return (
+              <div key={cutout.id} className="sink-control-row">
+                <div className="sink-control-header">
+                  <span className="sink-label">
+                    {CUTOUT_TYPES.find(t => t.id === cutout.type)?.name}
+                  </span>
+                  <button
+                    className="sink-remove-btn"
+                    onClick={() => removeCutout(cutout.id)}
+                  >
+                    ×
+                  </button>
                 </div>
-                <div className="sink-slider-group">
-                  <span className="sink-slider-label">Y</span>
-                  <input
-                    type="range"
-                    min={-(length / 50) / 2}
-                    max={(length / 50) / 2}
-                    step={0.05}
-                    value={cutout.y}
-                    onChange={(e) => updateCutoutProperty(cutout.id, 'y', Number(e.target.value))}
-                  />
-                </div>
-                <div className="sink-slider-group">
-                  <span className="sink-slider-label">R</span>
-                  <input
-                    type="range"
-                    min="0"
-                    max="360"
-                    step="5"
-                    value={cutout.rotation || 0}
-                    onChange={(e) => updateCutoutProperty(cutout.id, 'rotation', Number(e.target.value))}
-                  />
+                <div className="sink-sliders">
+                  {/* Width control */}
+                  <div className="sink-slider-group">
+                    <div className="slider-with-input">
+                      <span className="sink-slider-label">Ширина</span>
+                      <input
+                        type="number"
+                        className="sink-number-input"
+                        min={10}
+                        max={Math.round(Math.min(width - 5, 100))}
+                        value={widthCm}
+                        onChange={(e) => updateCutoutProperty(cutout.id, 'width', Number(e.target.value) / 50)}
+                      />
+                      <span className="sink-unit">см</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0.2}
+                      max={Math.min(width / 50 - 0.1, 2)}
+                      step={0.02}
+                      value={cutout.width}
+                      onChange={(e) => updateCutoutProperty(cutout.id, 'width', Number(e.target.value))}
+                    />
+                  </div>
+
+                  {/* Height/Depth control */}
+                  <div className="sink-slider-group">
+                    <div className="slider-with-input">
+                      <span className="sink-slider-label">Глубина</span>
+                      <input
+                        type="number"
+                        className="sink-number-input"
+                        min={10}
+                        max={Math.round(Math.min(length - 5, 75))}
+                        value={heightCm}
+                        onChange={(e) => updateCutoutProperty(cutout.id, 'height', Number(e.target.value) / 50)}
+                      />
+                      <span className="sink-unit">см</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0.2}
+                      max={Math.min(length / 50 - 0.1, 1.5)}
+                      step={0.02}
+                      value={cutout.height}
+                      onChange={(e) => updateCutoutProperty(cutout.id, 'height', Number(e.target.value))}
+                    />
+                  </div>
+
+                  {/* X Position control */}
+                  <div className="sink-slider-group">
+                    <div className="slider-with-input">
+                      <span className="sink-slider-label">X смещ.</span>
+                      <input
+                        type="number"
+                        className="sink-number-input"
+                        min={Math.round(bounds.minX * 50)}
+                        max={Math.round(bounds.maxX * 50)}
+                        value={xCm}
+                        onChange={(e) => updateCutoutProperty(cutout.id, 'x', Number(e.target.value) / 50)}
+                      />
+                      <span className="sink-unit">см</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={bounds.minX}
+                      max={bounds.maxX}
+                      step={0.02}
+                      value={Math.max(bounds.minX, Math.min(bounds.maxX, cutout.x))}
+                      onChange={(e) => updateCutoutProperty(cutout.id, 'x', Number(e.target.value))}
+                    />
+                  </div>
+
+                  {/* Y Position control */}
+                  <div className="sink-slider-group">
+                    <div className="slider-with-input">
+                      <span className="sink-slider-label">Y смещ.</span>
+                      <input
+                        type="number"
+                        className="sink-number-input"
+                        min={Math.round(bounds.minY * 50)}
+                        max={Math.round(bounds.maxY * 50)}
+                        value={yCm}
+                        onChange={(e) => updateCutoutProperty(cutout.id, 'y', Number(e.target.value) / 50)}
+                      />
+                      <span className="sink-unit">см</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={bounds.minY}
+                      max={bounds.maxY}
+                      step={0.02}
+                      value={Math.max(bounds.minY, Math.min(bounds.maxY, cutout.y))}
+                      onChange={(e) => updateCutoutProperty(cutout.id, 'y', Number(e.target.value))}
+                    />
+                  </div>
+
+                  {/* Rotation control */}
+                  <div className="sink-slider-group">
+                    <div className="slider-with-input">
+                      <span className="sink-slider-label">Поворот</span>
+                      <input
+                        type="number"
+                        className="sink-number-input"
+                        min={0}
+                        max={360}
+                        step={15}
+                        value={cutout.rotation || 0}
+                        onChange={(e) => updateCutoutProperty(cutout.id, 'rotation', Number(e.target.value))}
+                      />
+                      <span className="sink-unit">°</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={360}
+                      step={15}
+                      value={cutout.rotation || 0}
+                      onChange={(e) => updateCutoutProperty(cutout.id, 'rotation', Number(e.target.value))}
+                    />
+                  </div>
                 </div>
               </div>
-              <button
-                className="sink-remove-btn"
-                onClick={() => removeCutout(cutout.id)}
-              >
-                ×
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -206,16 +393,29 @@ export default function HeroSection({
               <h3>Материал столешницы</h3>
             </div>
             <div className="control-grid">
-              {TABLE_MATERIALS.map((mat) => (
+              {isLoadingData ? (
+                <div style={{ color: '#fff', fontSize: 12, padding: 10 }}>Загрузка материалов...</div>
+              ) : dbMaterials.map((mat) => (
                 <button
                   key={mat.id}
-                  className={`control-card ${selectedMaterial.id === mat.id ? "active" : ""}`}
+                  className={`control-card ${selectedMaterial?.id === mat.id ? "active" : ""}`}
                   onClick={() => setSelectedMaterial(mat)}
                 >
-                  <div
-                    className="material-preview"
-                    style={{ backgroundColor: mat.color }}
-                  />
+                  <div className="material-preview-box">
+                    {mat.textures?.color ? (
+                      <img
+                        src={mat.textures.color}
+                        alt={mat.name}
+                        className="material-image"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div
+                        className="material-color"
+                        style={{ backgroundColor: mat.color }}
+                      />
+                    )}
+                  </div>
                   <span className="control-label">{mat.name}</span>
                 </button>
               ))}
@@ -228,10 +428,12 @@ export default function HeroSection({
               <h3>Покрытие (OSMO)</h3>
             </div>
             <div className="control-grid coating-grid">
-              {TABLE_COATINGS.map((coat) => (
+              {isLoadingData ? (
+                <div style={{ color: '#fff', fontSize: 12, padding: 10 }}>Загрузка покрытий...</div>
+              ) : dbCoatings.map((coat) => (
                 <button
                   key={coat.id}
-                  className={`control-card ${selectedCoating.id === coat.id ? "active" : ""}`}
+                  className={`control-card ${selectedCoating?.id === coat.id ? "active" : ""}`}
                   onClick={() => setSelectedCoating(coat)}
                 >
                   <div
@@ -335,6 +537,8 @@ export default function HeroSection({
         <button
           className="action-btn btn-primary"
           onClick={() => setIsCheckoutOpen(true)}
+          disabled={!selectedMaterial || !selectedCoating}
+          style={{ opacity: (!selectedMaterial || !selectedCoating) ? 0.5 : 1 }}
         >
           <span className="action-text">ОФОРМИТЬ ЗАЯВКУ</span>
           <span className="action-icon arrow-right">→</span>
@@ -343,26 +547,30 @@ export default function HeroSection({
         <button
           className="action-btn btn-secondary"
           onClick={exportToPDF}
+          disabled={!selectedMaterial || !selectedCoating}
+          style={{ opacity: (!selectedMaterial || !selectedCoating) ? 0.5 : 1 }}
         >
           <span className="action-text">СКАЧАТЬ PDF</span>
           <span className="action-icon arrow-down">↓</span>
         </button>
       </div>
 
-      <CheckoutModal
-        isOpen={isCheckoutOpen}
-        onClose={() => setIsCheckoutOpen(false)}
-        config={{
-          material: selectedMaterial,
-          coating: selectedCoating,
-          shape,
-          width,
-          length,
-          thickness,
-          cutouts
-        }}
-        totalPrice={calculatePrice()}
-      />
-    </section>
+      {selectedMaterial && selectedCoating && (
+        <CheckoutModal
+          isOpen={isCheckoutOpen}
+          onClose={() => setIsCheckoutOpen(false)}
+          config={{
+            material: selectedMaterial,
+            coating: selectedCoating,
+            shape,
+            width,
+            length,
+            thickness,
+            cutouts
+          }}
+          totalPrice={calculatePrice()}
+        />
+      )}
+    </section >
   );
 }

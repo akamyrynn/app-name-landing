@@ -98,7 +98,23 @@ function TableModel3D({ material, coating, width, length, thickness, shape, cuto
 
   // Load Sink Model
   const { scene: sinkScene } = useGLTF("/kitchen_sink.glb");
-  const sinkClone = useMemo(() => sinkScene.clone(), [sinkScene]);
+
+  // Calculate sink model bounding box once
+  const sinkInfo = useMemo(() => {
+    const cloned = sinkScene.clone();
+    const box = new THREE.Box3().setFromObject(cloned);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    return {
+      scene: cloned,
+      size,
+      center,
+      // Original dimensions of the model
+      width: size.x,
+      height: size.y,
+      depth: size.z
+    };
+  }, [sinkScene]);
 
   return (
     <group>
@@ -117,34 +133,50 @@ function TableModel3D({ material, coating, width, length, thickness, shape, cuto
             )}
           </Base>
 
-          {cutouts.map((cutout) => (
-            <Subtraction
-              key={cutout.id}
-              position={[cutout.x, 0, cutout.y]}
-              rotation={[0, (cutout.rotation || 0) * (Math.PI / 180), 0]}
-            >
-              <boxGeometry args={[cutout.width, thickness * 2, cutout.height]} />
-            </Subtraction>
-          ))}
+          {cutouts.map((cutout) => {
+            // Make cutout slightly smaller than sink rim so the rim overlaps the table edge
+            // This hides any gaps at the rounded corners
+            const cutoutPadding = 0.92; // Cutout is 92% of sink size (rim overhangs 8%)
+            return (
+              <Subtraction
+                key={cutout.id}
+                position={[cutout.x, 0, cutout.y]}
+                rotation={[0, (cutout.rotation || 0) * (Math.PI / 180), 0]}
+              >
+                <boxGeometry args={[cutout.width * cutoutPadding, thickness * 2, cutout.height * cutoutPadding]} />
+              </Subtraction>
+            );
+          })}
         </Geometry>
-      </mesh>
+      </mesh >
 
       {/* Accessories (Sinks) */}
       {cutouts.map((cutout) => {
         if (cutout.type === "sink") {
+          // Scale sink to match cutout size
+          const scaleX = cutout.width / sinkInfo.width;
+          const scaleZ = cutout.height / sinkInfo.depth;
+          const scaleY = Math.min(scaleX, scaleZ);
+
+          // Position sink so rim sits ON the table surface
+          // Table top is at Y = thickness/2
+          // Simple approach: position sink center at table top level
+          // Subtract small offset to sit slightly lower for perfect visual fit
+          const sinkY = thickness / 2 + sinkInfo.center.y * scaleY - 0.015;
+
           return (
             <primitive
               key={`sink-${cutout.id}`}
-              object={sinkClone.clone()}
-              position={[cutout.x, thickness / 2, cutout.y]}
+              object={sinkInfo.scene.clone()}
+              position={[cutout.x, sinkY, cutout.y]}
               rotation={[0, (cutout.rotation || 0) * (Math.PI / 180), 0]}
-              scale={[1, 1, 1]}
+              scale={[scaleX, scaleY, scaleZ]}
             />
           );
         }
         return null;
       })}
-    </group>
+    </group >
   );
 }
 

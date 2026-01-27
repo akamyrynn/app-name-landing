@@ -109,26 +109,57 @@ function drawDimensionLine(
 }
 
 /**
- * Draw a cutout rectangle with dashed lines
+ * Draw a cutout rectangle with dashed lines (supports rotation)
  */
 function drawCutout(
     doc: jsPDF,
-    x: number,
-    y: number,
+    centerX: number,
+    centerY: number,
     w: number,
     h: number,
-    label: string
+    label: string,
+    rotation: number = 0 // rotation in degrees
 ) {
     doc.setDrawColor(CUTOUT_COLOR.r, CUTOUT_COLOR.g, CUTOUT_COLOR.b);
     doc.setLineWidth(0.3);
     doc.setLineDashPattern([2, 1], 0);
-    doc.rect(x, y, w, h);
+
+    // Convert rotation to radians
+    const rad = rotation * (Math.PI / 180);
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
+
+    // Calculate the 4 corners of the rotated rectangle
+    const halfW = w / 2;
+    const halfH = h / 2;
+
+    // Corners relative to center (before rotation)
+    const corners = [
+        { x: -halfW, y: -halfH },
+        { x: halfW, y: -halfH },
+        { x: halfW, y: halfH },
+        { x: -halfW, y: halfH },
+    ];
+
+    // Rotate and translate corners
+    const rotatedCorners = corners.map(c => ({
+        x: centerX + c.x * cos - c.y * sin,
+        y: centerY + c.x * sin + c.y * cos,
+    }));
+
+    // Draw lines between corners
+    for (let i = 0; i < 4; i++) {
+        const from = rotatedCorners[i];
+        const to = rotatedCorners[(i + 1) % 4];
+        doc.line(from.x, from.y, to.x, to.y);
+    }
+
     doc.setLineDashPattern([], 0);
 
-    // Label
+    // Label at center
     doc.setFontSize(6);
     doc.setTextColor(CUTOUT_COLOR.r, CUTOUT_COLOR.g, CUTOUT_COLOR.b);
-    doc.text(label, x + w / 2, y + h / 2, { align: 'center', baseline: 'middle' });
+    doc.text(label, centerX, centerY, { align: 'center', baseline: 'middle' });
 }
 
 /**
@@ -270,15 +301,15 @@ function drawTopView(
         doc.rect(viewX, viewY, w, h, 'FD');
     }
 
-    // Draw cutouts
+    // Draw cutouts with rotation
     config.cutouts.forEach((cutout, index) => {
-        // Convert 3D coordinates to 2D
+        // Convert 3D coordinates to 2D (center position)
         const cutoutW = cutout.width * 50 * scale;
         const cutoutH = cutout.height * 50 * scale;
-        const cutoutX = viewX + (w / 2) + (cutout.x * 50 * scale) - (cutoutW / 2);
-        const cutoutY = viewY + (h / 2) + (cutout.y * 50 * scale) - (cutoutH / 2);
+        const cutoutCenterX = viewX + (w / 2) + (cutout.x * 50 * scale);
+        const cutoutCenterY = viewY + (h / 2) + (cutout.y * 50 * scale);
 
-        drawCutout(doc, cutoutX, cutoutY, cutoutW, cutoutH, `${index + 1}`);
+        drawCutout(doc, cutoutCenterX, cutoutCenterY, cutoutW, cutoutH, `${index + 1}`, cutout.rotation || 0);
     });
 
     // Dimension lines
@@ -407,8 +438,8 @@ function drawCutoutsLegend(
     doc.setTextColor(LINE_COLOR.r, LINE_COLOR.g, LINE_COLOR.b);
     doc.text('ЭКСПЛИКАЦИЯ ВЫРЕЗОВ', x, y);
 
-    // Table header
-    const colWidths = [10, 30, 25, 25];
+    // Table header - added rotation column
+    const colWidths = [8, 25, 22, 22, 15];
     const rowHeight = 6;
     let currentY = y + 4;
 
@@ -421,8 +452,9 @@ function drawCutoutsLegend(
     doc.rect(x, currentY, colWidths.reduce((a, b) => a + b, 0), rowHeight);
     doc.text('№', x + 2, currentY + 4);
     doc.text('Тип', x + colWidths[0] + 2, currentY + 4);
-    doc.text('Размер, см', x + colWidths[0] + colWidths[1] + 2, currentY + 4);
+    doc.text('Размер', x + colWidths[0] + colWidths[1] + 2, currentY + 4);
     doc.text('Позиция', x + colWidths[0] + colWidths[1] + colWidths[2] + 2, currentY + 4);
+    doc.text('Угол', x + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3] + 2, currentY + 4);
     currentY += rowHeight;
 
     // Data rows
@@ -437,11 +469,13 @@ function drawCutoutsLegend(
         const sizeH = Math.round(cutout.height * 50);
         const posX = Math.round(cutout.x * 50);
         const posY = Math.round(cutout.y * 50);
+        const rot = cutout.rotation || 0;
 
         doc.text(`${index + 1}`, x + 2, currentY + 4);
         doc.text(cutoutType, x + colWidths[0] + 2, currentY + 4);
         doc.text(`${sizeW}×${sizeH}`, x + colWidths[0] + colWidths[1] + 2, currentY + 4);
-        doc.text(`X:${posX} Y:${posY}`, x + colWidths[0] + colWidths[1] + colWidths[2] + 2, currentY + 4);
+        doc.text(`${posX};${posY}`, x + colWidths[0] + colWidths[1] + colWidths[2] + 2, currentY + 4);
+        doc.text(`${rot}°`, x + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3] + 2, currentY + 4);
 
         currentY += rowHeight;
     });
