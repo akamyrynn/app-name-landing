@@ -248,9 +248,14 @@ export default function HeroSection({
         </button>
       </div>
 
+      <div className={`mobile-overlay ${activeTab ? 'visible' : ''}`} onClick={() => setActiveTab(null)} />
+
       {/* 2. Left Top Panel - Add Elements (Accessories) */}
       <div className={`glass-panel add-elements-panel ${activeTab === 'accessories' ? 'mobile-visible' : ''}`}>
-        <div className="panel-header-mobile">Аксессуары</div>
+        <div className="panel-header-mobile">
+          <span>Аксессуары</span>
+          <button className="close-mobile-panel" onClick={() => setActiveTab(null)}>✕</button>
+        </div>
         <button className="add-btn" onClick={() => addCutout('sink')}>
           <span>Кухонная раковина</span>
           <div className="add-btn-icon">+</div>
@@ -339,7 +344,10 @@ export default function HeroSection({
 
       {/* 4. Right Top Panel - Material Selection */}
       <div className={`glass-panel material-panel ${activeTab === 'materials' ? 'mobile-visible' : ''}`} data-lenis-prevent>
-        <div className="panel-header-mobile">Материалы и Покрытия</div>
+        <div className="panel-header-mobile">
+          <span>Материалы</span>
+          <button className="close-mobile-panel" onClick={() => setActiveTab(null)}>✕</button>
+        </div>
         <div className="controls-scroll">
           <div className="control-section">
             <div className="control-header">
@@ -406,7 +414,10 @@ export default function HeroSection({
 
       {/* 5. Right Bottom Panel - Shape & Dimensions Controls */}
       <div className={`glass-panel configurator-controls ${activeTab === 'shape' ? 'mobile-visible' : ''}`} data-lenis-prevent>
-        <div className="panel-header-mobile">Форма и Размеры</div>
+        <div className="panel-header-mobile">
+          <span>Размеры</span>
+          <button className="close-mobile-panel" onClick={() => setActiveTab(null)}>✕</button>
+        </div>
         <div className="controls-scroll">
 
           {/* Shape Selection */}

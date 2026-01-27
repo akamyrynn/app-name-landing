@@ -984,3 +984,105 @@
     padding-bottom: 20px;
   }
 }
+
+/* CLOSE BUTTON & HEADER IMPROVEMENTS */
+.panel-header-mobile {
+  display: flex !important; /* Force flex on mobile */
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0 15px 0;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.close-mobile-panel {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* OVERLAY BACKDROP */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 250; /* Below panel (300) but above content */
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.mobile-overlay.visible {
+  display: block;
+}
+
+/* FIX ACTION BAR LAYOUT */
+@media (max-width: 768px) {
+  .glass-panel.action-bar {
+    padding: 10px 16px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom)); /* iOS Safe Area */
+    gap: 10px;
+    height: auto;
+    align-items: center;
+  }
+  
+  .price-badge {
+    height: 44px;
+    flex: 1;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  
+  .price-value {
+    font-size: 18px;
+  }
+
+  .action-btn {
+    height: 44px;
+    padding: 0 20px;
+    border-radius: 12px;
+    flex: 0 0 auto; /* Don't shrink */
+  }
+
+  /* Hide secondary PDF button on mobile to save space if needed, or make it icon only */
+  .action-btn.btn-secondary {
+    padding: 0 12px;
+    min-width: 44px;
+  }
+  .action-btn.btn-secondary .action-text {
+    display: none;
+  }
+  .action-btn.btn-secondary .action-icon {
+    margin: 0;
+  }
+
+  /* Make panels look better */
+  .glass-panel.mobile-visible {
+    border-radius: 20px 20px 0 0;
+    background: #1a1a1a; /* Solid dark background */
+    border-top: 1px solid rgba(255,255,255,0.1);
+    max-height: 70vh;
+    padding-bottom: 40px; /* Space for scrolling */
+  }
+}
