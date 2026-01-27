@@ -590,7 +590,7 @@ function ModelsPanel({ models, onAdd, onEdit, onDelete, onToggle }: {
             <PanelHeader
                 title="3D Модели"
                 count={models.length}
-                description="GLB модели для аксессуаров: мойки, варочные панели, грили. Загружайте .glb файлы."
+                description="Управление 3D моделями аксессуаров."
                 onAdd={onAdd}
                 addLabel="Добавить модель"
             />
@@ -663,7 +663,7 @@ function PricingPanel({ rules, onUpdate, onToggle }: {
         <div className="glass-panel-admin">
             <PanelHeader
                 title="Правила расчёта цены"
-                description="Настройте множители и добавки к цене. Множитель 1.15 = +15% к цене. Добавка — фиксированная сумма."
+                description="Настройте множители и добавки к цене."
             />
             <div className="pricing-sections">
                 {Object.entries(groupedRules).map(([type, typeRules]) => (
